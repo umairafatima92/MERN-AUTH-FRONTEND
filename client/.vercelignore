@@ -1,0 +1,7 @@
+.env
+README.md
+node_modules
+tests
+*.log
+.vscode/
+.idea/
