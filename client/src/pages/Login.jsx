@@ -13,9 +13,11 @@ const Login = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false); 
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setIsLoading(true); 
     try {
       axios.defaults.withCredentials = true;
       if (state === 'signup') {
@@ -39,6 +41,8 @@ const Login = () => {
       }
     } catch (error) {
       toast.error(error.response?.data?.message || error.message);
+    } finally {
+      setIsLoading(false); 
     }
   };
 
@@ -105,8 +109,11 @@ const Login = () => {
           >
             Forgot Password?
           </p>
-          <button className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium">
-            {state === 'signup' ? 'Sign Up' : 'Login'}
+          <button 
+            disabled={isLoading} 
+            className="w-full py-2.5 rounded-full bg-gradient-to-r from-indigo-500 to-indigo-900 text-white font-medium"
+          >
+            {isLoading ? 'Wait...' : (state === 'signup' ? 'Sign Up' : 'Login')} 
           </button>
         </form>
 
@@ -127,7 +134,7 @@ const Login = () => {
               onClick={() => setState('signup')}
               className="text-blue-400 cursor-pointer underline"
             >
-                {isLoading ? "Wait..." : "Sign Up"}
+              Sign Up 
             </span>
           </p>
         )}
