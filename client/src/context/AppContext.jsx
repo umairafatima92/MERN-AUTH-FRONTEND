@@ -9,7 +9,24 @@ export const AppContextProvider = ({ children }) => {
 
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userData, setUserData] = useState(null); 
+  const [userData, setUserData] = useState(null);
+
+  const getUserData = async () => {
+    try {
+      const { data } = await axios.get(backendUrl + '/api/user/data');
+      if (data.success) {
+        setUserData(data.data);
+        setIsLoggedIn(true);
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      if (isLoggedIn) {
+        toast.error(error.response?.data?.message || 'Failed to get user data');
+      }
+      console.log('Failed to get user data:', error);
+    }
+  };
 
   const getAuthState = async () => {
     try {
@@ -21,33 +38,15 @@ export const AppContextProvider = ({ children }) => {
         setIsLoggedIn(false);
       }
     } catch (error) {
-      
       setIsLoggedIn(false);
       console.log('User not authenticated');
     }
   };
 
-  const getUserData = async () => {
-    try {
-      const { data } = await axios.get(backendUrl + '/api/user/data');
-      if (data.success) {
-        setUserData(data.data);
-        setIsLoggedIn(true); 
-      } else {
-        toast.error(data.message);
-      }
-    } catch (error) {
-      
-      if (isLoggedIn) {
-        toast.error(error.response?.data?.message || 'Failed to get user data');
-      }
-      console.log('Failed to get user data:', error);
-    }
-  };
-
   useEffect(() => {
     getAuthState();
-  }, []);
+    
+  }, []); 
 
   const value = {
     backendUrl,
