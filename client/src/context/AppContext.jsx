@@ -1,3 +1,5 @@
+ AppContext.js;
+
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -13,24 +15,34 @@ export const AppContextProvider = ({ children }) => {
 
   const getUserData = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/user/data');
+      const { data } = await axios.get(backendUrl + "/api/user/data", {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (data.success) {
-        setUserData(data.data);
+        setUserData(data.userData);
         setIsLoggedIn(true);
       } else {
         toast.error(data.message);
       }
     } catch (error) {
       if (isLoggedIn) {
-        toast.error(error.response?.data?.message || 'Failed to get user data');
+        toast.error(error.response?.data?.message || "Failed to get user data");
       }
-      console.log('Failed to get user data:', error);
+      console.log("Failed to get user data:", error);
     }
   };
 
   const getAuthState = async () => {
     try {
-      const { data } = await axios.get(backendUrl + '/api/auth/is-auth');
+      const { data } = await axios.get(backendUrl + "/api/auth/is-auth", {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       if (data.success) {
         setIsLoggedIn(true);
         getUserData();
@@ -39,14 +51,13 @@ export const AppContextProvider = ({ children }) => {
       }
     } catch (error) {
       setIsLoggedIn(false);
-      console.log('User not authenticated');
+      console.log("User not authenticated");
     }
   };
 
   useEffect(() => {
     getAuthState();
-    
-  }, []); 
+  }, []);
 
   const value = {
     backendUrl,
