@@ -25,7 +25,8 @@ export const AppContextProvider = ({ children }) => {
         setUserData(data.userData);
         setIsLoggedIn(true);
       } else {
-        toast.error(data.message);
+        console.log(error.message);
+        
       }
     } catch (error) {
       if (isLoggedIn) {
